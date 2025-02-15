@@ -2,8 +2,8 @@ import Header from "@/components/layout/Header";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Webpesca",
-    description: "Gestão em Pescados",
+    title: "Dashboard",
+    description: "Gestão de Notas",
 };
 
 export default async function DashboardLayout({

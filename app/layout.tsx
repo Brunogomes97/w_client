@@ -4,6 +4,7 @@ import { Roboto } from "next/font/google";
 import { Suspense } from "react";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/toaster";
 
 
 export const metadata: Metadata = {
@@ -25,6 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
+        <Toaster />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

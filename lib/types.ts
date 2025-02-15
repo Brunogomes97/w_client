@@ -4,3 +4,7 @@ export type UserProps = {
     username: string;
 };
 
+export type ApiErrorProps = {
+    message: string;
+    statusCode: number;
+};

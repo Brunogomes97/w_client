@@ -22,8 +22,8 @@ body {
     --muted-foreground: 240 3.8% 46.1%;
     --accent: 240 4.8% 95.9%;
     --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
+    /* --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%; */
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
     --ring: 240 10% 3.9%;
@@ -41,6 +41,22 @@ body {
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /*Used for destructive actions such as <Button variant="destructive">*/
+    --destructive: #ef4343;
+    --destructive-foreground: #f8fafc;
+
+
+    /*For Toast components  */
+    --success: #28a745;
+    --success-foreground: #f8fafc;
+
+    --confirm: #118052;
+    --confirm-foreground: #f8fafc;
+
+    --warning: #facc15;
+    --warning-foreground: #0f1729;
+
   }
 
   .dark {
@@ -58,8 +74,8 @@ body {
     --muted-foreground: 240 5% 64.9%;
     --accent: 240 3.7% 15.9%;
     --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
+    /* --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%; */
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
@@ -76,6 +92,20 @@ body {
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+
+    --success: #28a745;
+    --success-foreground: #f8fafc;
+
+    --confirm: #118052;
+    --confirm-foreground: #f8fafc;
+
+    --warning: #facc15;
+    --warning-foreground: #0f1729;
+
+    --destructive: #811d1d;
+    --destructive-foreground: #f8fafc;
+
   }
 }
 
