@@ -2,7 +2,8 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-// import UserAuthForm from "@/components/forms/auth-form";
+import UserAuthForm from "@/components/forms/auth-form";
+
 
 export const metadata: Metadata = {
     title: "Authentication",
@@ -58,7 +59,7 @@ export default async function AuthenticationPage() {
                             Entre com suas credencias para entrar em sua conta
                         </p>
                     </div>
-                    {/* <UserAuthForm /> */}
+                    <UserAuthForm />
                     <p className="px-8 text-center text-sm text-muted-foreground">
                         Não criou a conta? Clique aqui para{" "}
                         <Link

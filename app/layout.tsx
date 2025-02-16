@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
+import { QueryProvider } from "@/hooks/provider";
 
 
 export const metadata: Metadata = {
@@ -26,17 +27,19 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <Toaster />
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Suspense fallback={<div>Loading...</div>}>
-            <main className={mainClassName}>{children}</main>
-          </Suspense>
-        </ThemeProvider>
+        <QueryProvider>
+          <Toaster />
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Suspense fallback={<div>Loading...</div>}>
+              <main className={mainClassName}>{children}</main>
+            </Suspense>
+          </ThemeProvider>
+        </QueryProvider>
       </body>
     </html>
   );

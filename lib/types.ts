@@ -5,6 +5,19 @@ export type UserProps = {
 };
 
 export type ApiErrorProps = {
-    message: string;
     statusCode: number;
+    timestamp: string;
+    path: string;
+    exception: string;
+    message: string;
 };
+
+export type AuthSessionResponse = {
+    user: UserProps & {
+        iat: string;
+        exp: string;
+    };
+
+}
+
+export interface AuthLoginResponse extends UserProps { iat: string; token: string; }
