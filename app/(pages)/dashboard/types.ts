@@ -2,12 +2,10 @@ export type NoteData = {
     id: string,
     title: string,
     createdAt: string,
-    type: 'personal' | 'work' | 'study' | 'idea' | 'reminder' | 'todo',
+    type: 'personal' | 'work' | 'study' | 'ideia' | 'reminder' | 'todo',
     description: string
 
 }
-
-
 
 export type FetchingNoteData = {
     data: [NoteData];
@@ -18,4 +16,12 @@ export type FetchingNoteData = {
 };
 
 
+export type NoteCreateForm = {
+    title: string,
+    type: 'personal' | 'work' | 'study' | 'ideia' | 'reminder' | 'todo',
+    description: string
+}
+
+export type NoteEditForm = NoteCreateForm
 export type NotesColumnData = NoteData
+export type NoteResponseData = NoteData

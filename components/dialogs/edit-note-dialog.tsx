@@ -20,70 +20,90 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "@/components/ui/use-toast";
 import { Dispatch, SetStateAction, useState } from "react";
 import { SelectItems } from "@/components/select-items";
-import {
-  SpecieColumnData,
-  SpecieEditForm,
-} from "@/app/(pages)/dashboard/(pages)/species/types";
-import { updateSpecie } from "@/app/(pages)/dashboard/(pages)/species/actions";
-import { speciesTypes } from "@/components/constants/data";
+import { noteTypeObjectFormat, noteTypeObjectFormatReverse, noteTypes } from "@/components/constants/data";
+import { NoteCreateForm, NoteData, NotesColumnData } from "@/app/(pages)/dashboard/types";
+import { updateNote } from "@/app/(pages)/dashboard/actions";
+import { ApiErrorProps } from "@/lib/types";
 import AsyncButton from "@/components/ui/async-button";
+import { toast } from "@/hooks/use-toast";
 
 type EditDialogType<T> = {
   state: [T, Dispatch<SetStateAction<T>>];
-  data: SpecieColumnData;
+  data: NoteData;
 };
 
-type EditFormType = {
-  useDialog: any;
-  data: SpecieColumnData;
-};
+
 const zMessage = {
   min: {
     message: "Campo Requerido",
   },
   max: {
-    message: "max. 50 caracteres",
+    title: "max. 50 caractéres",
+    text: "max. 250 caractéres",
   },
 };
 
 const formSchema = z.object({
-  name: z.string().min(1, zMessage.min).max(50, zMessage.max),
-  type: z.string().min(1, zMessage.min).max(50, zMessage.max),
-  a_weight: z.number(),
-  description: z.string().max(150, { message: "max. 150 caractéres" }),
+  title: z.string().min(1, zMessage.min).max(50, zMessage.max.title),
+  type: z.enum(["Pessoal", "Trabalho", "Estudo", "Ideia", "Lembrete", "Para fazer", "Meeting"])
+    .transform((value) => noteTypeObjectFormat[value]),
+  description: z.string().min(1, zMessage.min).max(250, { message: zMessage.max.text }),
 });
 
-function FormContent({ useDialog, data }: EditFormType) {
+type FormContentType = {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  data: NotesColumnData;
+
+};
+
+export function EditNoteDialog({ data, state }: EditDialogType<boolean>) {
+  const [open, setOpen] = state;
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent className="sm:max-w-[525px]">
+        <DialogHeader>
+          <DialogTitle>Editar dados de {data.title}</DialogTitle>
+          <DialogDescription>
+            Edite os dados da espécie de cultivo preenchendo os campos abaixo:
+          </DialogDescription>
+        </DialogHeader>
+        <FormContent open={open} setOpen={setOpen} data={data} />
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+
+function FormContent({ setOpen, data }: FormContentType) {
   const [blockConfirm, setBlockConfirm] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: data.name,
-      type: data.type,
-      a_weight: data.a_weight,
+      title: data.title,
+      type: noteTypeObjectFormatReverse[data.type],
       description: data.description,
     },
   });
 
   function compareEqual(
-    data: SpecieEditForm,
+    data: NoteCreateForm,
     values: z.infer<typeof formSchema>,
   ) {
     const valuesToCompare = {
-      name: data.name,
-      a_weight: data.a_weight,
+      title: data.title,
       type: data.type,
       description: data.description,
     };
+    console.log({ values, valuesToCompare });
+
 
     return JSON.stringify(values) === JSON.stringify(valuesToCompare);
   }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const [, setOpen] = useDialog;
 
     setBlockConfirm(true);
     try {
@@ -96,7 +116,15 @@ function FormContent({ useDialog, data }: EditFormType) {
         return;
       }
 
-      await updateSpecie(data.id, values);
+      const dataValues = {
+        title: values.title,
+        type: values.type as NoteCreateForm["type"],
+        description: values.description,
+      }
+      console.log(dataValues);
+
+
+      await updateNote(data.id, dataValues);
 
       toast({
         variant: "success",
@@ -105,12 +133,12 @@ function FormContent({ useDialog, data }: EditFormType) {
       });
       setOpen(false);
 
-    } catch (err: any) {
-      console.error(err);
+    } catch (err: unknown) {
+      const error = err as ApiErrorProps;
       toast({
         variant: "destructive",
         title: "Ocorreu um erro ao editar os dados.",
-        description: err?.message,
+        description: error?.message,
       });
       setOpen(false);
 
@@ -129,7 +157,7 @@ function FormContent({ useDialog, data }: EditFormType) {
           <div className="col-span-2">
             <FormField
               control={form.control}
-              name="name"
+              name="title"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Nome</FormLabel>
@@ -144,32 +172,12 @@ function FormContent({ useDialog, data }: EditFormType) {
           <div className="col-span-1">
             <FormField
               control={form.control}
-              name="a_weight"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Peso Médio (g)</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder=""
-                      type="number"
-                      {...field}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="col-span-1">
-            <FormField
-              control={form.control}
               name="type"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Tipo</FormLabel>
                   <FormControl>
-                    <SelectItems title="Tipo" items={speciesTypes} {...field} />
+                    <SelectItems title="Tipo" items={noteTypes} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -185,7 +193,7 @@ function FormContent({ useDialog, data }: EditFormType) {
             <FormItem>
               <FormLabel>Descrição</FormLabel>
               <FormControl>
-                <Textarea placeholder="" {...field} />
+                <Textarea placeholder="" maxLength={250} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -199,19 +207,3 @@ function FormContent({ useDialog, data }: EditFormType) {
   );
 }
 
-export function EditSpecieDialog({ data, state }: EditDialogType<boolean>) {
-  const [open, setOpen] = state;
-  return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-[625px]">
-        <DialogHeader>
-          <DialogTitle>Editar dados de {data.name}</DialogTitle>
-          <DialogDescription>
-            Edite os dados da espécie de cultivo preenchendo os campos abaixo:
-          </DialogDescription>
-        </DialogHeader>
-        <FormContent useDialog={[open, setOpen]} data={data} />
-      </DialogContent>
-    </Dialog>
-  );
-}

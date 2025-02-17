@@ -8,7 +8,7 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import React from "react";
+import React, { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,6 +35,9 @@ import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ColumnsOptions } from "@/components/tables/column-selector";
 import FilterButton from "@/components/buttons/filter-button";
+import { NotesColumnData } from "@/app/(pages)/dashboard/types";
+import ShowNoteDialog from "@/components/dialogs/show-note-dialog";
+import { RemoveButton } from "@/components/buttons/remove-button";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -77,11 +80,20 @@ export function NotesTable<TData, TValue>({
     { title: "Pessoal", value: "personal" },
     { title: "Trabalho", value: "work" },
     { title: "Estudo", value: "study" },
-    { title: "Ideia", value: "idea" },
+    { title: "Ideia", value: "ideia" },
     { title: "Lembrete", value: "reminder" },
     { title: "Para fazer", value: "todo" },
     { title: "Meeting", value: "meeting" }
   ];
+
+  const optionsList = {
+    type: typeOptions,
+    order: [{ title: "Mais antigo", value: "asc" }, { title: "Mais recente", value: null }],
+  };
+  const [open, setOpen] = useState(false);
+  const [selectedRow, setSelectedRow] = useState<NotesColumnData | null>(
+    null,
+  );
 
 
   /* this can be used to get the selectedrows 
@@ -181,6 +193,7 @@ export function NotesTable<TData, TValue>({
 
   return (
     <>
+      <ShowNoteDialog data={selectedRow} open={open} setOpen={setOpen} />
       <div className="flex items-center">
         <Input
           placeholder={`${"Título da"} ${tableName}...`}
@@ -190,7 +203,9 @@ export function NotesTable<TData, TValue>({
           }
           className="w-full md:max-w-sm"
         />
-        <FilterButton name="Tipos" filterKey="type" list={typeOptions} className="mx-2" />
+        <FilterButton name="Tipos" filterKey="type" list={optionsList.type} className="mx-2" />
+        <FilterButton name="Ordenação" filterKey="order" list={optionsList.order} className="mx-2" />
+        <RemoveButton />
         <ColumnsOptions columns={table.getAllColumns()} />
       </div>
       <div className="border rounded-md">
@@ -222,7 +237,14 @@ export function NotesTable<TData, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell
+                      onClick={() => {
+                        setOpen(true);
+                        setSelectedRow(row.original as NotesColumnData);
+                      }}
+                      key={cell.id}
+                      className="cursor-pointer truncate max-w-[250px] whitespace-nowrap overflow-hidden">
+
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),
@@ -246,7 +268,7 @@ export function NotesTable<TData, TValue>({
         </Table>
       </div>
 
-      <div className="flex flex-col gap-2 sm:flex-row items-center justify-end space-x-2 py-4">
+      <div className="px-2 rounded-md border sticky bottom-3 bg-background  flex flex-col gap-2 sm:flex-row items-center justify-end space-x-2 py-4">
         <div className="flex items-center justify-between w-full">
           <div className="flex-1 text-sm text-muted-foreground">
             {table.getFilteredSelectedRowModel().rows.length} de{" "}

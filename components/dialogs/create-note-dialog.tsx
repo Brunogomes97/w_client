@@ -26,24 +26,28 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { SelectItems } from "@/components/select-items";
-import { noteTypes } from "@/components/constants/data";
+import { noteTypeObjectFormat, noteTypes } from "@/components/constants/data";
 import { ApiErrorProps } from "@/lib/types";
 import AsyncButton from "@/components/ui/async-button";
 import { toast } from "@/hooks/use-toast";
+import { createNote } from "@/app/(pages)/dashboard/actions";
+import { NoteCreateForm } from "@/app/(pages)/dashboard/types";
 
 const zMessage = {
   min: {
     message: "Campo Requerido",
   },
   max: {
-    message: "max. 200 caracteres",
+    title: "max. 50 caractéres",
+    text: "max. 250 caractéres",
   },
 };
 
 const formSchema = z.object({
-  title: z.string().min(1, zMessage.min).max(50, zMessage.max),
-  type: z.enum(["Pessoal", "Trabalho", "Estudo", "Ideia", "Lembrete", "Para fazer", "Meeting"]),
-  description: z.string().min(1, zMessage.min).max(200, { message: "max. 150 caractéres" }),
+  title: z.string().min(1, zMessage.min).max(50, zMessage.max.title),
+  type: z.enum(["Pessoal", "Trabalho", "Estudo", "Ideia", "Lembrete", "Para fazer", "Meeting"])
+    .transform((value) => noteTypeObjectFormat[value]),
+  description: z.string().min(1, zMessage.min).max(250, { message: zMessage.max.text }),
 });
 type FormContentType = {
   open: boolean;
@@ -90,10 +94,17 @@ function FormContent({ setOpen }: FormContentType) {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setBlockConfirm(true);
-    console.log(values);
 
     try {
-      // await createSpecie(values);
+
+      const data = {
+        title: values.title,
+        type: values.type as NoteCreateForm["type"],
+        description: values.description
+      }
+
+      await createNote(data);
+
       toast({
         variant: "success",
         title: "Sucesso.",
@@ -162,7 +173,7 @@ function FormContent({ setOpen }: FormContentType) {
             <FormItem>
               <FormLabel>Descrição</FormLabel>
               <FormControl>
-                <Textarea placeholder="" {...field} />
+                <Textarea placeholder="" maxLength={250} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

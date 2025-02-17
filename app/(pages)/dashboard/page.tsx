@@ -31,12 +31,15 @@ export default async function DashboardPage({
 
 
     const page = Number(params.page) || 1;
-    const pageLimit = Number(params.limit) || 10;
+    const pageLimit = Number(params.limit) || 5;
     const title = params.search || null;
+    const order = params.order || "";
+
     const offset = (page - 1) * pageLimit;
     const search = title ? `&search=${title}` : "";
     const type = params.type || "";
     const typeSearch = type ? `&type=${type}` : "";
+    const orderSearch = order ? `&order=${order}` : "";
 
     const result = await getCurrentSession();
 
@@ -45,9 +48,8 @@ export default async function DashboardPage({
         redirect("/login");
     }
 
-
     const fetchingRoute =
-        `notas/?offset=${offset.toString()}&limit=${pageLimit.toString()}${search}${typeSearch}`;
+        `notas/?offset=${offset.toString()}&limit=${pageLimit.toString()}${search}${typeSearch}${orderSearch}`;
 
     const response = await fetchAPI<FetchingNoteData>(fetchingRoute, {
         method: "GET",

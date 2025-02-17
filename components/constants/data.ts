@@ -1,39 +1,5 @@
 import { NavItem } from "@/components/types";
 
-
-export const uf = {
-  brazil: [
-    "AP",
-    "AC",
-    "AL",
-    "AM",
-    "BA",
-    "CE",
-    "DF",
-    "ES",
-    "GO",
-    "MA",
-    "MT",
-    "MS",
-    "MG",
-    "PA",
-    "PB",
-    "PR",
-    "PE",
-    "PI",
-    "RJ",
-    "RN",
-    "RS",
-    "RO",
-    "RR",
-    "SC",
-    "SP",
-    "SE",
-    "TO",
-  ],
-};
-
-
 export const noteTypes = [
   "Pessoal",
   "Trabalho",
@@ -47,10 +13,19 @@ export const noteTypeObjectFormat = {
   Pessoal: "personal",
   Trabalho: "work",
   Estudo: "study",
-  Ideia: "idea",
+  Ideia: "ideia",
   Lembrete: "reminder",
   "Para fazer": "todo",
   Meeting: "meeting",
+}
+export const noteTypeObjectFormatReverse = {
+  personal: "Pessoal",
+  work: "Trabalho",
+  study: "Estudo",
+  ideia: "Ideia",
+  reminder: "Lembrete",
+  todo: "Para fazer",
+  meeting: "Meeting",
 }
 
 

@@ -17,11 +17,16 @@ export const columns: ColumnDef<NotesColumnData>[] = [
       />
     ),
     cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
+      <div
+        onClick={(event) => event.stopPropagation()}
+        onKeyDown={(event) => event.stopPropagation()}
+      >
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      </div>
     ),
     enableSorting: false,
     enableHiding: false,
@@ -41,7 +46,8 @@ export const columns: ColumnDef<NotesColumnData>[] = [
         study: "Estudo",
         ideia: "Ideia",
         reminder: "Lembrete",
-        todo: "Tarefa",
+        todo: "Para Fazer",
+        meeting: "Meeting",
       };
       return <Badge>{types[type] || type}</Badge>;
     },
@@ -57,9 +63,29 @@ export const columns: ColumnDef<NotesColumnData>[] = [
   {
     accessorKey: "description",
     header: "Descrição",
+    cell: ({ row }) => {
+      return (
+        <div
+          className="flex-1 truncate whitespace-nowrap overflow-hidden"
+          title={row.original.description}
+        >
+          {row.original.description}
+        </div>
+      );
+    },
+    size: 300, // Define um tamanho inicial, mas permite que a coluna se ajuste
+    minSize: 100, // Define um tamanho mínimo para evitar que fique muito pequeno
+    enableResizing: true, // Permite redimensionamento dinâmico
   },
   {
     id: "actions",
-    cell: ({ row }) => <CellAction data={row.original} />,
+    cell: ({ row }) => (
+      <div
+        onClick={(event) => event.stopPropagation()}
+        onKeyDown={(event) => event.stopPropagation()}
+      >
+        <CellAction data={row.original} />
+      </div>
+    ),
   },
 ];

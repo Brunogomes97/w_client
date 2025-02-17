@@ -1,5 +1,7 @@
 "use client";
+import { removeNote } from "@/app/(pages)/dashboard/actions";
 import { NotesColumnData } from "@/app/(pages)/dashboard/types";
+import { EditNoteDialog } from "@/components/dialogs/edit-note-dialog";
 import { AlertModal } from "@/components/modal/alert-modal";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,7 +11,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
 import { Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useState } from "react";
 
@@ -23,11 +25,11 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [editOpen, setEditOpen] = useState(false);
   const onConfirm = async () => {
     try {
-      // await removeSpecie(data.id);
+      await removeNote(data.id);
       toast({
         variant: "success",
         title: "Sucesso.",
-        description: "Fazenda Removida!",
+        description: "Nota Removida!",
       });
     } catch (err) {
       console.error(err);
@@ -51,7 +53,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         onConfirm={onConfirm}
         loading={loading}
       />
-      {/* <EditNoteDialog data={data} state={[editOpen, setEditOpen]} /> */}
+      <EditNoteDialog data={data} state={[editOpen, setEditOpen]} />
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
