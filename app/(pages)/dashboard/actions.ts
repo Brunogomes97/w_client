@@ -80,3 +80,24 @@ export async function removeNote(id: string) {
     throw err;
   }
 }
+
+
+export async function removeManyNotes(ids: string[]) {
+  try {
+    const url = `${baseServerRoute}`;
+
+    const res = await fetchAPI<NoteResponseData[]>(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ids }),
+    });
+
+    revalidatePath(baseClientRoute);
+    return res;
+  } catch (error: unknown) {
+    const err = error as ApiErrorProps;
+    throw err;
+  }
+}

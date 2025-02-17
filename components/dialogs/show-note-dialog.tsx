@@ -49,7 +49,7 @@ export default function ShowNoteDialog({
         <DialogHeader>
           <DialogTitle>{noteData.title}</DialogTitle>
         </DialogHeader>
-        <div className="grid grid-cols-2 gap-x-2 gap-y-2">
+        <div className="grid grid-cols-2 gap-x-2 gap-y-2 select-none">
           <div className="select-none flex flex-col gap-1">
             <span className="text-sm text-muted-foreground cursor-pointer">
               Tipo
@@ -88,7 +88,8 @@ interface ContentProps {
 function ContentList({ data }: ContentProps) {
   return (
     <>
-      <div className="border rounded-sm px-2 py-3">
+      <div className="border rounded-sm px-2 py-3
+       break-words break-all hyphens-auto">
         {data.description}
       </div>
     </>

@@ -38,6 +38,12 @@ import FilterButton from "@/components/buttons/filter-button";
 import { NotesColumnData } from "@/app/(pages)/dashboard/types";
 import ShowNoteDialog from "@/components/dialogs/show-note-dialog";
 import { RemoveButton } from "@/components/buttons/remove-button";
+import { AlertModal } from "@/components/modal/alert-modal";
+import { Badge } from "@/components/ui/badge";
+import { removeManyNotes } from "@/app/(pages)/dashboard/actions";
+import { noteTypeObjectFormatReverse } from "@/components/constants/data";
+import { toast } from "@/hooks/use-toast";
+import { ApiErrorProps } from "@/lib/types";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -94,6 +100,7 @@ export function NotesTable<TData, TValue>({
   const [selectedRow, setSelectedRow] = useState<NotesColumnData | null>(
     null,
   );
+  const [removeManyOpen, setRemoveAllOpen] = useState(false);
 
 
   /* this can be used to get the selectedrows 
@@ -190,10 +197,72 @@ export function NotesTable<TData, TValue>({
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue]);
+  const selectedRows = table.getFilteredSelectedRowModel();
+  const selectedItems = selectedRows.rows.map((row) => row.original) as NotesColumnData[];
+
+  const RemoveManyContent = () => {
+    return (
+      <>
+        <div className="text-sm border rounded-md p-2">
+          <div className="grid grid-cols-3 text-muted-foreground gap-4 mb-2">
+            <span>Título</span>
+            <span>Tipo</span>
+            <span>Data</span>
+          </div>
+          <div className="grid grid-cols-3 overflow-y-auto max-h-40 gap-4">
+            {selectedItems.map((item) => (
+              <React.Fragment key={item.id}>
+                <span>{item.title}</span>
+                <Badge variant={"secondary"} className="h-fit w-fit">
+                  {noteTypeObjectFormatReverse[item.type]}
+                </Badge>
+                <span>{new Intl.DateTimeFormat("pt-BR", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" }).format(new Date(item.createdAt))}</span>
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+      </>
+    )
+  }
+
+  const handleRemoveItems = async () => {
+    try {
+      await removeManyNotes(selectedItems.map((item) => item.id))
+      toast({
+        variant: "success",
+        title: "Sucesso.",
+        description: "Notas removidas com sucesso!",
+      })
+
+    } catch (error: unknown) {
+      const err = error as ApiErrorProps;
+      toast({
+        variant: "destructive",
+        title: "Erro.",
+        description: "Ocorreu um erro ao remover as notas!",
+      })
+      console.log(err);
+
+    } finally {
+      setRemoveAllOpen(false)
+      table.toggleAllPageRowsSelected(false)
+    }
+  }
+
 
   return (
     <>
       <ShowNoteDialog data={selectedRow} open={open} setOpen={setOpen} />
+      <AlertModal
+        title={`Deseja remover as notas selecionadas?`}
+        description={`Esta ação é destrutiva e não poderá ser desfeita. Confirme se deseja prosseguir.`}
+        confirmVariant="destructive"
+        isOpen={removeManyOpen}
+        onClose={() => setRemoveAllOpen(false)}
+        onConfirm={handleRemoveItems}
+        loading={false}
+        content={<RemoveManyContent />}
+      />
       <div className="flex items-center">
         <Input
           placeholder={`${"Título da"} ${tableName}...`}
@@ -205,7 +274,7 @@ export function NotesTable<TData, TValue>({
         />
         <FilterButton name="Tipos" filterKey="type" list={optionsList.type} className="mx-2" />
         <FilterButton name="Ordenação" filterKey="order" list={optionsList.order} className="mx-2" />
-        <RemoveButton />
+        <RemoveButton className="mr-2" disabled={selectedItems.length === 0} items={selectedItems} onClick={() => setRemoveAllOpen(true)} />
         <ColumnsOptions columns={table.getAllColumns()} />
       </div>
       <div className="border rounded-md">
