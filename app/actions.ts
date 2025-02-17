@@ -36,9 +36,6 @@ export async function logout() {
   } catch (error) {
     console.log(error);
 
-    //Caso falhar, somente remover o cookie e redirecionar
-    await deleteSessionTokenCookie();
-
   }
 }
 
@@ -51,9 +48,6 @@ export async function getValidatedSessionToken(): Promise<AuthSessionResponse | 
       method: "GET",
       credentials: "include",
     })
-
-    // const res = await GET_SESSION();
-    // const { session, user } = await res.json();
 
     return { user }
   } catch (error) {

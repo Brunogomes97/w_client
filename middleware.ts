@@ -1,10 +1,19 @@
 import { NextResponse, type NextRequest } from "next/server";
-
+const routePages = ["/"];
 
 export async function middleware(request: NextRequest) {
 
     //console.log({ requestName: request.nextUrl.pathname, method: request.method });
     const token = request.cookies.get("access_token")?.value ?? null;
+
+    //Redirecionar para /dashboard em caso de paginas
+    if (routePages.includes(request.nextUrl.pathname)) {
+        if (token !== null) {
+            return NextResponse.redirect(new URL("/dashboard", request.url))
+        } else {
+            return NextResponse.redirect(new URL("/login", request.url))
+        }
+    }
 
 
     if (request.method === "GET") {

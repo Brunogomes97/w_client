@@ -12,13 +12,13 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, UseFormReturn } from "react-hook-form";
 import { ReloadIcon } from "@radix-ui/react-icons";
-import * as z from "zod";
 import { useRouter } from 'next/navigation';
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { FormEvent, useEffect } from "react";
 import { getClientSession } from "@/hooks/provider";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
+import * as z from "zod";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Insira um email válido" }),
@@ -30,15 +30,14 @@ type UserFormValue = z.infer<typeof formSchema>;
 
 export default function UserAuthForm() {
 
-  const { isSuccess, isLoading } = useQuery(getClientSession());
-
+  const { data, isLoading } = useQuery(getClientSession());
 
   useEffect(() => {
-    if (isSuccess) {
+    if (data?.user) {
       router.push("/dashboard");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSuccess]);
+  }, [data]);
 
   const router = useRouter();
 
@@ -53,8 +52,10 @@ export default function UserAuthForm() {
   });
 
 
-  const onSubmit = async (data: UserFormValue) => {
-    // event.preventDefault();
+
+  const onSubmit = async (data: UserFormValue, event?: React.BaseSyntheticEvent | FormEvent<HTMLFormElement>) => {
+    event?.preventDefault();
+
     try {
       const { email, password } = data;
       const formData = new FormData();
@@ -71,21 +72,27 @@ export default function UserAuthForm() {
         credentials: "include",
       });
 
+
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || "Erro ao autenticar");
       }
-    } catch {
+
+      router.push("/dashboard");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       toast({
         variant: "destructive",
         title: "Ocorreu um erro ao realizar login!",
         description: "Credenciais Incorretas.",
       });
-      // console.error(error);
-    } finally {
-      form.reset();
+      console.log(error);
+    }
+    //finally {
+    // form.reset();
 
-    };
+    //};
   }
   return (
     <>
@@ -99,7 +106,7 @@ export default function UserAuthForm() {
 
 interface AuthFormularyProps {
   form: UseFormReturn<UserFormValue>;
-  onSubmit: (data: UserFormValue) => void;
+  onSubmit: (data: UserFormValue, event?: React.BaseSyntheticEvent | FormEvent<HTMLFormElement>) => void;
 }
 
 function AuthFormulary({ form, onSubmit }: AuthFormularyProps) {

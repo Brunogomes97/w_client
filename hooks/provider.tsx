@@ -21,6 +21,9 @@ function getClientSession() {
       try {
         const route = `/session`
         const res = await fetch(route)
+        if (!res.ok) {
+          return null
+        }
         return await res.json();
       }
       catch (err) {

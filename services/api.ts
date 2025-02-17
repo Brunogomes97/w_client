@@ -8,19 +8,18 @@ export async function fetchAPI<T = unknown>(
   const cookiesStore = await cookies();
   const accessToken = cookiesStore.get("access_token");
 
-  console.log(accessToken)
 
   const response = await fetch(`${baseURL}/${input}`, {
     ...init,
     credentials: "include",
     headers: {
       // Cookie: `access_token=${accessToken?.value}`,
+      Authorization: `Bearer ${accessToken?.value}`,
       "Content-Type": "application/json",
     }
   });
 
   const result = await response.json();
-  console.log(result)
 
   if (!response.ok) {
     throw new Error(`Erro ${result.statusCode || response.status}: ${result.message || "Erro desconhecido"}`);

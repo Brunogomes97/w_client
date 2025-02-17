@@ -16,8 +16,7 @@ export async function GET(): Promise<Response> {
             });
         }
         const data = await fetchAPI<AuthSessionResponse>("auth/session")
-        console.log(data)
-        const user = data.user
+        const user = data?.user
 
         if (user === null) {
             return new Response(null, {
@@ -28,13 +27,13 @@ export async function GET(): Promise<Response> {
         return NextResponse.json({ user });
     } catch {
 
-        // cookiesStore.set("access_token", "", {
-        //     httpOnly: true,
-        //     sameSite: "lax",
-        //     // secure: process.env.NODE_ENV === "production",
-        //     maxAge: 0,
-        //     path: "/"
-        // });
+        cookiesStore.set("access_token", "", {
+            httpOnly: true,
+            sameSite: "lax",
+            // secure: process.env.NODE_ENV === "production",
+            maxAge: 0,
+            path: "/"
+        });
 
         return new Response(null, {
             status: 401

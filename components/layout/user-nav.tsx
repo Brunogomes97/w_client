@@ -1,12 +1,11 @@
 "use client";
 
-// import { logout } from "@/app/actions";
+import { logout } from "@/app/actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -43,19 +42,8 @@ export function UserNav({ user }: UserNavProps) {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
-            Perfil
-            {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            Configurações
-            {/* <DropdownMenuShortcut>⌘S</DropdownMenuShortcut> */}
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
         <DropdownMenuItem
-        // onClick={async () => await logout()}
+          onClick={async () => await logout()}
         >
           Sair
           {/* <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut> */}
