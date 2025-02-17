@@ -79,6 +79,7 @@ export const columns: ColumnDef<NotesColumnData>[] = [
   },
   {
     id: "actions",
+    header: "Ações",
     cell: ({ row }) => (
       <div
         onClick={(event) => event.stopPropagation()}

@@ -20,15 +20,21 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import * as z from "zod";
 
-const formSchema = z.object({
-  email: z.string().email({ message: "Insira um email válido" }),
-  password: z
-    .string()
-    .refine((value) => value, { message: "Insira uma senha válida" }),
-});
+const formSchema = z
+  .object({
+    username: z.string().min(1, { message: "Campo Requerido" }).max(30, { message: "Max de 30 caracteres" }),
+    email: z.string().email({ message: "Insira um email válido" }),
+    password: z.string().min(6, { message: "A senha deve ter pelo menos 6 caracteres" }),
+    passwordConfirm: z.string(),
+  })
+  .refine((data) => data.password === data.passwordConfirm, {
+    message: "As senhas não coincidem",
+    path: ["passwordConfirm"], // Define onde o erro será exibido
+  });
+
 type UserFormValue = z.infer<typeof formSchema>;
 
-export default function UserAuthForm() {
+export default function SignupForm() {
 
   const { data, isLoading } = useQuery(getClientSession());
 
@@ -48,55 +54,60 @@ export default function UserAuthForm() {
   const defaultValues = {
     email: "",
     password: "",
+    username: "",
+    passwordConfirm: "",
   };
-
   const form = useForm<UserFormValue>({
     resolver: zodResolver(formSchema),
     defaultValues,
+    mode: "onChange",
   });
-
-
 
   const onSubmit = async (data: UserFormValue, event?: React.BaseSyntheticEvent | FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
 
     try {
-      const { email, password } = data;
+      const { email, password, username } = data;
       const formData = new FormData();
       formData.append("email", email);
       formData.append("password", password);
+      formData.append("username", username);
 
 
-      const response = await fetch(`/login/api`, {
+      const response = await fetch(`/register/api`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, username }),
         credentials: "include",
       });
-
-
 
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || "Erro ao autenticar");
       }
 
-      router.push("/dashboard");
+      toast({
+        variant: "success",
+        title: "Sucesso!",
+        description: "Usuário Registrado com sucesso!",
+      });
+      router.push("/login");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
+
       toast({
         variant: "destructive",
-        title: "Ocorreu um erro ao realizar login!",
-        description: "Credenciais Incorretas.",
+        title: "Ocorreu um erro ao realizar operação!",
+        description: error?.message,
       });
       console.log(error);
     }
-    //finally {
-    // form.reset();
+    finally {
+      form.reset();
 
-    //};
+    };
   }
   return (
     <>
@@ -143,6 +154,25 @@ function AuthFormulary({ form, onSubmit }: AuthFormularyProps) {
           />
           <FormField
             control={form.control}
+            name="username"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nome de Usuário</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    placeholder="Coloque o seu nome de usuário..."
+                    disabled={isSubmitting}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
             name="password"
             render={({ field }) => (
               <FormItem>
@@ -159,18 +189,37 @@ function AuthFormulary({ form, onSubmit }: AuthFormularyProps) {
               </FormItem>
             )}
           />
-
-          <Button
-            disabled={isSubmitting}
-            className="ml-auto w-full"
-            type="submit"
-          >
-            {isSubmitting ? (
-              <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              "Entrar"
+          <FormField
+            control={form.control}
+            name="passwordConfirm"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Confirmar Senha</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder="Confirme a sua Senha..."
+                    disabled={isSubmitting}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
-          </Button>
+          />
+          <div>
+            <Button
+              disabled={isSubmitting}
+              className="w-full mt-4"
+              type="submit"
+            >
+              {isSubmitting ? (
+                <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                "Cadastrar"
+              )}
+            </Button>
+          </div>
         </form>
       </Form>
       <div className="relative">

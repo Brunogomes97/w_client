@@ -63,7 +63,7 @@ export default async function AuthenticationPage() {
                     <p className="px-8 text-center text-sm text-muted-foreground">
                         Não criou a conta? Clique aqui para{" "}
                         <Link
-                            href="/new-user"
+                            href="/register"
                             className="underline underline-offset-4 hover:text-primary"
                         >
                             cadastrar.
