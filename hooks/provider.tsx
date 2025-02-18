@@ -20,7 +20,9 @@ function getClientSession() {
     queryFn: async () => {
       try {
         const route = `/session`
-        const res = await fetch(route)
+        const res = await fetch(route, {
+          // cache: "no-store"
+        })
         if (!res.ok) {
           return null
         }
@@ -32,7 +34,7 @@ function getClientSession() {
       }
     },
     retry: false,
-    staleTime: 5 * 1000,
+    // staleTime: Infinity,
   });
 }
 

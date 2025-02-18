@@ -36,6 +36,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Se
     const result = await getCurrentSession();
 
     const { user } = result;
+
     if (user === null) {
         redirect("/login");
     }
@@ -51,7 +52,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Se
     }).catch((err) => console.log(err));
 
 
-    const data = response?.data as NoteData[];
+    const data = response?.data as NoteData[] || [];
     const total_items = response?.total_items || 0;
     const pageCount = Math.ceil(total_items / pageLimit) || 1;
 

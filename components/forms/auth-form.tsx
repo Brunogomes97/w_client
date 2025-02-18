@@ -32,7 +32,11 @@ export default function UserAuthForm() {
 
   const { data, isLoading } = useQuery(getClientSession());
 
+
   useEffect(() => {
+    if (isLoading) return
+
+
     if (data?.user) {
       toast({
         title: "Sessão Encontrada!",
@@ -67,7 +71,7 @@ export default function UserAuthForm() {
       formData.append("password", password);
 
 
-      const response = await fetch(`/login/api`, {
+      const response = await fetch(`/session`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -75,8 +79,6 @@ export default function UserAuthForm() {
         body: JSON.stringify({ email, password }),
         credentials: "include",
       });
-
-
 
       if (!response.ok) {
         const errorData = await response.json();

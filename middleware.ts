@@ -6,6 +6,8 @@ export async function middleware(request: NextRequest) {
     //console.log({ requestName: request.nextUrl.pathname, method: request.method });
     const token = request.cookies.get("access_token")?.value ?? null;
 
+
+
     //Redirecionar para /dashboard em caso de paginas
     if (routePages.includes(request.nextUrl.pathname)) {
         if (token !== null) {

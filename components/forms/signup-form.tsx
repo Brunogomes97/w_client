@@ -39,6 +39,9 @@ export default function SignupForm() {
   const { data, isLoading } = useQuery(getClientSession());
 
   useEffect(() => {
+    if (isLoading) return
+
+
     if (data?.user) {
       toast({
         title: "Sessão Encontrada!",

@@ -1,6 +1,6 @@
 "use client";
 
-import { logout } from "@/app/actions";
+// import { logout } from "@/app/actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,12 +12,25 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { UserProps } from "@/lib/types";
+import { useRouter } from "next/navigation";
 
 interface UserNavProps {
   user: UserProps | null;
 }
 
 export function UserNav({ user }: UserNavProps) {
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await fetch("/session/", {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+
+    router.push("/login");
+  };
+
 
 
   return (
@@ -43,10 +56,10 @@ export function UserNav({ user }: UserNavProps) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          onClick={async () => await logout()}
+          onClick={handleLogout}
         >
           Sair
-          {/* <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut> */}
+
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
