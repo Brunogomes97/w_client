@@ -5,30 +5,22 @@ import { Separator } from "@/components/ui/separator";
 import { redirect } from "next/navigation";
 import { fetchAPI } from "@/services/api";
 import { FetchingNoteData, NoteData } from "./types";
-import BreadCrumb from "@/components/breadcrumb-page";
 import { columns } from "@/components/tables/notas-table/columns";
 import { NotesTable } from "@/components/tables/notas-table/notas-table";
+import BreadCrumb from "@/components/breadcrumb-page";
 
 
 const breadcrumbItems = [{ title: "Notas", link: "/dashboard" }];
 
-type paramsProps = {
-    searchParams: {
-        [key: string]: string | string[] | undefined;
-    };
-};
 
 const metadata = {
     title: "Minhas notas",
     description: "Notas registradas no sistema ",
 };
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
 
-
-export default async function DashboardPage({
-    searchParams
-}: paramsProps) {
+export default async function DashboardPage({ searchParams }: { searchParams: SearchParams }) {
     const params = await searchParams
-
 
     const page = Number(params.page) || 1;
     const pageLimit = Number(params.limit) || 5;
