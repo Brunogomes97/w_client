@@ -1,7 +1,7 @@
 "use server";
 import { cookies } from "next/headers";
 import { fetchAPI } from "../services/api";
-import { cache } from "react";
+// import { cache } from "react";
 import { AuthSessionResponse, UserProps } from "@/lib/types";
 
 interface LocalSessionProps {
@@ -10,7 +10,7 @@ interface LocalSessionProps {
 
 
 ///Session Functions
-export const getCurrentSession = cache(async (): Promise<LocalSessionProps> => {
+export const getCurrentSession = async (): Promise<LocalSessionProps> => {
   const cookieStore = await cookies();
   const token = cookieStore.get("access_token")?.value ?? null;
   if (token === null) {
@@ -25,7 +25,7 @@ export const getCurrentSession = cache(async (): Promise<LocalSessionProps> => {
 
   }
   return result;
-});
+};
 export async function getValidatedSessionToken(): Promise<AuthSessionResponse | null> {
 
   try {

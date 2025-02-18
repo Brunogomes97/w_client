@@ -27,8 +27,9 @@ export function UserNav({ user }: UserNavProps) {
       credentials: "include",
     });
 
-
-    router.push("/login");
+    window.location.reload();
+    router.replace("/login");
+    // router.push("/login");
   };
 
 
