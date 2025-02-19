@@ -1,6 +1,5 @@
 "use client";
 
-// import { logout } from "@/app/actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,14 +11,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { UserProps } from "@/lib/types";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 
 interface UserNavProps {
   user: UserProps | null;
 }
 
 export function UserNav({ user }: UserNavProps) {
-  const router = useRouter();
+  // const router = useRouter();
 
   const handleLogout = async () => {
     await fetch("/session/", {
@@ -28,7 +27,7 @@ export function UserNav({ user }: UserNavProps) {
     });
 
     window.location.reload();
-    router.replace("/login");
+    // router.replace("/login");
     // router.push("/login");
   };
 

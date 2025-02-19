@@ -67,7 +67,7 @@ export function EditNoteDialog({ data, state }: EditDialogType<boolean>) {
         <DialogHeader>
           <DialogTitle>Editar dados de {data.title}</DialogTitle>
           <DialogDescription>
-            Edite os dados da espécie de cultivo preenchendo os campos abaixo:
+            Edite os dados da nota preenchendo os campos abaixo:
           </DialogDescription>
         </DialogHeader>
         <FormContent open={open} setOpen={setOpen} data={data} />

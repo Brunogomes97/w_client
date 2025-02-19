@@ -95,10 +95,10 @@ export default function UserAuthForm() {
       });
       console.log(error);
     }
-    //finally {
-    // form.reset();
+    finally {
+      form.reset();
 
-    //};
+    };
   }
   return (
     <>
