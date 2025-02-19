@@ -1,14 +1,12 @@
 # Gestão de Notas  - App
 
-Adicione aqui uma imagem ilustrando a aplicação.
-
 Um aplicativo de gestão de notas com capacidade de criar, editar, remover e pesquisar notas. O projeto funciona com uma API externa desenvolvida em Nest.js para o servidor. Os usuários podem se logar e registrar no website para ter acesso às funcionalidades.
 
 ![Imagem do App](public/app.png)
 
 ## 🔗 Demonstração
 
-- Aplicação hospedada: [Gestão de Notas](https://w-client.vercel.app/)
+- Aplicação (demo): [Gestão de Notas](https://w-client.vercel.app/)
 - API Externa (Nest JS): [Repositório da API](https://github.com/Brunogomes97/w_server)
 
 ## 🚀 Tecnologias Utilizadas
